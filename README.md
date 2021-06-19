@@ -122,7 +122,15 @@ async function keyProtectSdkExample() {
   const getKeyParams = Object.assign({}, envConfigs);
   getKeyParams.id = keyId;
   response = await keyProtectClient.getKey(getKeyParams);
-  console.log('Get key response status: ' + response.status);
+  console.log('Get key result: ');
+  console.log(response.result.resources[0]);
+
+  // Get list of keys associated to the instance
+  response = await keyProtectClient.getKeys(envConfigs);
+  console.log('Get keys result:');
+  for(let resource of response.result.resources){
+     console.log(resource);
+  }
 
   // Wrap and unwrap key
   const samplePlaintext = 'dGhpcyBpcyBhIGJhc2U2NCBzdHJpbmcK'; // base64 encoded plaintext
@@ -142,7 +150,14 @@ async function keyProtectSdkExample() {
     ciphertext: ciphertextResult, // from wrap key response
   };
   response = await keyProtectClient.unwrapKey(unwrapKeyParams);
-  console.log('Unwrap key response status: ' + response.status);
+  console.log('Key plain text is: ' + response.result.plaintext);   //should be the same as 'samplePlaintext' above
+
+  // Delete key
+  const deleteKeyParams = Object.assign({}, envConfigs);
+  deleteKeyParams.id = keyId;
+  deleteKeyParams.prefer = 'return=representation';
+  response = await keyProtectClient.deleteKey(deleteKeyParams);
+  console.log('Delete key response status: ' + response.status);
 }
 
 keyProtectSdkExample();
