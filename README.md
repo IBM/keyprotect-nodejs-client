@@ -163,6 +163,98 @@ async function keyProtectSdkExample() {
 keyProtectSdkExample();
 ```
 
+### Example of wrap/unwrap/delete key using key alias-extensions in SDK
+
+```js
+const KeyProtectV2 = require('@ibm-cloud/ibm-key-protect/ibm-key-protect-api/v2');
+const { IamAuthenticator } = require('@ibm-cloud/ibm-key-protect/auth');
+
+// env vars, using external configuration in this example
+const envConfigs = {
+  apiKey: process.env.IBMCLOUD_API_KEY,
+  iamAuthUrl: process.env.IAM_AUTH_URL,
+  serviceUrl: process.env.KP_SERVICE_URL,
+  bluemixInstance: process.env.KP_INSTANCE_ID,
+  prefer:"",
+  id:"",
+  body:{},
+  alias: ""
+};
+
+async function keyProtectSdkExample() {
+  let response;
+
+  // Create an IAM authenticator.
+  const authenticator = new IamAuthenticator({
+    apikey: envConfigs.apiKey,
+    url: envConfigs.iamAuthUrl,
+  });
+
+  // Construct the service client.
+  const keyProtectClient = new KeyProtectV2({
+    authenticator,
+    serviceUrl: envConfigs.serviceUrl,
+  });
+
+  // Create a key
+  const body = {
+    metadata: {
+      collectionType: 'application/vnd.ibm.kms.key+json',
+      collectionTotal: 1,
+    },
+    resources: [
+      {
+        type: 'application/vnd.ibm.kms.key+json',
+        name: 'nodejsKey',
+        extractable: false,
+      },
+    ],
+  };
+  const createParams = Object.assign({}, envConfigs);
+  createParams.body = body;
+  response = await keyProtectClient.createKey(createParams);
+  const keyId = response.result.resources[0].id;
+  console.log('Key created, id is: ' + keyId);
+
+  //Create Key alias 
+  const keyAliasParam = Object.assign({}, envConfigs);
+  keyAliasParam.id = keyId
+  keyAliasParam.alias = "alias1"
+  keyAliasParam.body = body
+  response = await keyProtectClient.createKeyAlias(keyAliasParam);
+  console.log('Key alias created, id is: ' + response.status);
+
+  // Wrap and unwrap key
+  const samplePlaintext = 'dGhpcyBpcyBhIGJhc2U2NCBzdHJpbmcK'; // base64 encoded plaintext
+
+  const wrapKeyParams = Object.assign({}, envConfigs);
+  wrapKeyParams.id = keyAliasParam.alias; // use key alias instead of key id to wrap a key 
+  wrapKeyParams.keyActionWrapBody = {
+    plaintext: samplePlaintext,
+  };
+  response = await keyProtectClient.wrapKey(wrapKeyParams);
+  console.log('Wrap key response status: ' + response.status);
+  const ciphertextResult = response.result.ciphertext;
+
+  const unwrapKeyParams = Object.assign({}, envConfigs);
+  unwrapKeyParams.id = keyAliasParam.alias; // use key alias to unwrap a key
+  unwrapKeyParams.keyActionUnwrapBody = {
+    ciphertext: ciphertextResult, // from wrap key response
+  };
+  response = await keyProtectClient.unwrapKey(unwrapKeyParams);
+  console.log('Key plain text is: ' + response.result.plaintext);   //should be the same as 'samplePlaintext' above
+
+  // Delete key
+  const deleteKeyParams = Object.assign({}, envConfigs);
+  deleteKeyParams.id = keyAliasParam.alias; // use key alias to delete a key
+  deleteKeyParams.prefer = 'return=representation';
+  response = await keyProtectClient.deleteKey(deleteKeyParams);
+  console.log('Delete key response status: ' + response.status);
+}
+
+keyProtectSdkExample();
+```
+
 For more information and IBM Cloud SDK usage examples for Node.js, see
 the [IBM Cloud SDK Common documentation](https://github.com/IBM/ibm-cloud-sdk-common/blob/master/README.md)
 
