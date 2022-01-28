@@ -408,6 +408,18 @@ describe('key protect v2 integration', () => {
       done();
     });
 
+    // syncAssociatedResource key should be done 1 hrs after any key operations, so expect to get error
+    it('syncAssociatedResource', async done => {
+      try {
+        const syncParams = Object.assign({}, options);
+        syncParams.id = keyId;
+        await keyProtectClient.syncAssociatedResources(syncParams);
+      } catch (err) {
+        expect(err.body).toContain('REQ_TOO_EARLY_ERR');
+      }
+      done();
+    });
+
     it('retoreKey', async done => {
       // wait for 30 seconds after the key was deleted
       await new Promise(r => setTimeout(r, 30000));
