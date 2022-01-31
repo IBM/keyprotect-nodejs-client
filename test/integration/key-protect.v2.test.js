@@ -763,4 +763,54 @@ describe('key protect v2 integration', () => {
       done();
     });
   });
+  describe('key alias extensions', () => {
+    it('checkKeyaliasExtension', async done => {
+      let response;
+      const samplePlaintext = 'dGhpcyBpcyBhIGJhc2U2NCBzdHJpbmcK';
+      try {
+        // create a key alias
+        const keyAlias = 'nodejsAlias';
+        const createKeyAliasParams = Object.assign({}, options);
+        createKeyAliasParams.id = keyId;
+        createKeyAliasParams.alias = keyAlias;
+        response = await keyProtectClient.createKeyAlias(createKeyAliasParams);
+        expect(response).toBeDefined();
+        expect(response.status).toEqual(201);
+
+        // wrap using key alias
+        const wrapKeyParams = Object.assign({}, options);
+        wrapKeyParams.id = createKeyAliasParams.alias;
+        wrapKeyParams.keyActionWrapBody = {
+          plaintext: samplePlaintext,
+        };
+        response = await keyProtectClient.wrapKey(wrapKeyParams);
+        const ciphertextResult = response.result.ciphertext;
+        expect(response).toBeDefined();
+        expect(response.status).toEqual(200);
+
+        // un-wrap using key alias
+        const unwrapKeyParams = Object.assign({}, options);
+        unwrapKeyParams.id = createKeyAliasParams.alias;
+        unwrapKeyParams.keyActionUnwrapBody = {
+          ciphertext: ciphertextResult,
+        };
+        response = await keyProtectClient.unwrapKey(unwrapKeyParams);
+        const plaintextResult = response.result.plaintext;
+        expect(response).toBeDefined();
+        expect(plaintextResult).toEqual(samplePlaintext);
+        expect(response.status).toEqual(200);
+
+        // delete a key using key alias
+        const deleteKeyParams = Object.assign({}, options);
+        deleteKeyParams.id = createKeyAliasParams.alias;
+        deleteKeyParams.prefer = 'return=representation';
+        response = await keyProtectClient.deleteKey(deleteKeyParams);
+        expect(response).toBeDefined();
+        expect(response.status).toEqual(200);
+      } catch (err) {
+        done(err);
+      }
+      done();
+    });
+  });
 });
