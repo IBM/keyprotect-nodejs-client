@@ -4,7 +4,7 @@
   "description": "IBM Cloud Key Protect Node SDK",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/IBM/keyprotect-nodejs-client.git"
+    "url": "https://github.com/IBM/keyprotect-nodejs-client.git"
   },
   "keywords": [
     "ibm",
