@@ -21,13 +21,8 @@ const { NoAuthAuthenticator, unitTestUtils } = core;
 
 const IbmKeyProtectApiV2 = require('../../dist/ibm-key-protect-api/v2');
 
-const {
-  getOptions,
-  checkUrlAndMethod,
-  checkMediaHeaders,
-  expectToBePromise,
-  checkUserHeader,
-} = unitTestUtils;
+const { getOptions, checkUrlAndMethod, checkMediaHeaders, expectToBePromise, checkUserHeader } =
+  unitTestUtils;
 
 const service = {
   authenticator: new NoAuthAuthenticator(),
@@ -160,7 +155,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.createKeyAlias({});
@@ -172,11 +167,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const createKeyAliasPromise = ibmKeyProtectApiService.createKeyAlias();
         expectToBePromise(createKeyAliasPromise);
 
-        createKeyAliasPromise.catch(err => {
+        createKeyAliasPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -244,7 +239,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.deleteKeyAlias({});
@@ -256,11 +251,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const deleteKeyAliasPromise = ibmKeyProtectApiService.deleteKeyAlias();
         expectToBePromise(deleteKeyAliasPromise);
 
-        deleteKeyAliasPromise.catch(err => {
+        deleteKeyAliasPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -324,7 +319,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.postImportToken({});
@@ -336,11 +331,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const postImportTokenPromise = ibmKeyProtectApiService.postImportToken();
         expectToBePromise(postImportTokenPromise);
 
-        postImportTokenPromise.catch(err => {
+        postImportTokenPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -398,7 +393,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getImportToken({});
@@ -410,11 +405,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getImportTokenPromise = ibmKeyProtectApiService.getImportToken();
         expectToBePromise(getImportTokenPromise);
 
-        getImportTokenPromise.catch(err => {
+        getImportTokenPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -480,7 +475,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.wrapKey({});
@@ -492,11 +487,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const wrapKeyPromise = ibmKeyProtectApiService.wrapKey();
         expectToBePromise(wrapKeyPromise);
 
-        wrapKeyPromise.catch(err => {
+        wrapKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -564,7 +559,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.unwrapKey({});
@@ -576,11 +571,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const unwrapKeyPromise = ibmKeyProtectApiService.unwrapKey();
         expectToBePromise(unwrapKeyPromise);
 
-        unwrapKeyPromise.catch(err => {
+        unwrapKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -648,7 +643,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.rewrapKey({});
@@ -660,11 +655,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const rewrapKeyPromise = ibmKeyProtectApiService.rewrapKey();
         expectToBePromise(rewrapKeyPromise);
 
-        rewrapKeyPromise.catch(err => {
+        rewrapKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -733,7 +728,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.rotateKey({});
@@ -745,11 +740,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const rotateKeyPromise = ibmKeyProtectApiService.rotateKey();
         expectToBePromise(rotateKeyPromise);
 
-        rotateKeyPromise.catch(err => {
+        rotateKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -812,7 +807,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.setKeyForDeletion({});
@@ -824,11 +819,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const setKeyForDeletionPromise = ibmKeyProtectApiService.setKeyForDeletion();
         expectToBePromise(setKeyForDeletionPromise);
 
-        setKeyForDeletionPromise.catch(err => {
+        setKeyForDeletionPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -891,7 +886,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.unsetKeyForDeletion({});
@@ -903,11 +898,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const unsetKeyForDeletionPromise = ibmKeyProtectApiService.unsetKeyForDeletion();
         expectToBePromise(unsetKeyForDeletionPromise);
 
-        unsetKeyForDeletionPromise.catch(err => {
+        unsetKeyForDeletionPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -970,7 +965,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.enableKey({});
@@ -982,11 +977,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const enableKeyPromise = ibmKeyProtectApiService.enableKey();
         expectToBePromise(enableKeyPromise);
 
-        enableKeyPromise.catch(err => {
+        enableKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1049,7 +1044,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.disableKey({});
@@ -1061,11 +1056,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const disableKeyPromise = ibmKeyProtectApiService.disableKey();
         expectToBePromise(disableKeyPromise);
 
-        disableKeyPromise.catch(err => {
+        disableKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1087,9 +1082,8 @@ describe('IbmKeyProtectApiV2', () => {
           xKmsKeyRing: xKmsKeyRing,
         };
 
-        const syncAssociatedResourcesResult = ibmKeyProtectApiService.syncAssociatedResources(
-          params
-        );
+        const syncAssociatedResourcesResult =
+          ibmKeyProtectApiService.syncAssociatedResources(params);
 
         // all methods should return a Promise
         expectToBePromise(syncAssociatedResourcesResult);
@@ -1130,7 +1124,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.syncAssociatedResources({});
@@ -1142,11 +1136,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const syncAssociatedResourcesPromise = ibmKeyProtectApiService.syncAssociatedResources();
         expectToBePromise(syncAssociatedResourcesPromise);
 
-        syncAssociatedResourcesPromise.catch(err => {
+        syncAssociatedResourcesPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1202,7 +1196,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.listKeyRings({});
@@ -1214,11 +1208,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const listKeyRingsPromise = ibmKeyProtectApiService.listKeyRings();
         expectToBePromise(listKeyRingsPromise);
 
-        listKeyRingsPromise.catch(err => {
+        listKeyRingsPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1278,7 +1272,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.createKeyRing({});
@@ -1290,11 +1284,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const createKeyRingPromise = ibmKeyProtectApiService.createKeyRing();
         expectToBePromise(createKeyRingPromise);
 
-        createKeyRingPromise.catch(err => {
+        createKeyRingPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1354,7 +1348,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.deleteKeyRing({});
@@ -1366,11 +1360,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const deleteKeyRingPromise = ibmKeyProtectApiService.deleteKeyRing();
         expectToBePromise(deleteKeyRingPromise);
 
-        deleteKeyRingPromise.catch(err => {
+        deleteKeyRingPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1394,9 +1388,8 @@ describe('IbmKeyProtectApiV2', () => {
           xKmsKeyRing: xKmsKeyRing,
         };
 
-        const getKeyCollectionMetadataResult = ibmKeyProtectApiService.getKeyCollectionMetadata(
-          params
-        );
+        const getKeyCollectionMetadataResult =
+          ibmKeyProtectApiService.getKeyCollectionMetadata(params);
 
         // all methods should return a Promise
         expectToBePromise(getKeyCollectionMetadataResult);
@@ -1436,7 +1429,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getKeyCollectionMetadata({});
@@ -1448,11 +1441,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getKeyCollectionMetadataPromise = ibmKeyProtectApiService.getKeyCollectionMetadata();
         expectToBePromise(getKeyCollectionMetadataPromise);
 
-        getKeyCollectionMetadataPromise.catch(err => {
+        getKeyCollectionMetadataPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1518,7 +1511,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.createKey({});
@@ -1530,11 +1523,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const createKeyPromise = ibmKeyProtectApiService.createKey();
         expectToBePromise(createKeyPromise);
 
-        createKeyPromise.catch(err => {
+        createKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1604,7 +1597,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getKeys({});
@@ -1616,11 +1609,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getKeysPromise = ibmKeyProtectApiService.getKeys();
         expectToBePromise(getKeysPromise);
 
-        getKeysPromise.catch(err => {
+        getKeysPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1683,7 +1676,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getKey({});
@@ -1695,11 +1688,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getKeyPromise = ibmKeyProtectApiService.getKey();
         expectToBePromise(getKeyPromise);
 
-        getKeyPromise.catch(err => {
+        getKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1766,7 +1759,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.patchKey({});
@@ -1778,11 +1771,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const patchKeyPromise = ibmKeyProtectApiService.patchKey();
         expectToBePromise(patchKeyPromise);
 
-        patchKeyPromise.catch(err => {
+        patchKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1851,7 +1844,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.deleteKey({});
@@ -1863,11 +1856,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const deleteKeyPromise = ibmKeyProtectApiService.deleteKey();
         expectToBePromise(deleteKeyPromise);
 
-        deleteKeyPromise.catch(err => {
+        deleteKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -1930,7 +1923,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getKeyMetadata({});
@@ -1942,11 +1935,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getKeyMetadataPromise = ibmKeyProtectApiService.getKeyMetadata();
         expectToBePromise(getKeyMetadataPromise);
 
-        getKeyMetadataPromise.catch(err => {
+        getKeyMetadataPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2012,7 +2005,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.purgeKey({});
@@ -2024,11 +2017,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const purgeKeyPromise = ibmKeyProtectApiService.purgeKey();
         expectToBePromise(purgeKeyPromise);
 
-        purgeKeyPromise.catch(err => {
+        purgeKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2098,7 +2091,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.restoreKey({});
@@ -2110,11 +2103,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const restoreKeyPromise = ibmKeyProtectApiService.restoreKey();
         expectToBePromise(restoreKeyPromise);
 
-        restoreKeyPromise.catch(err => {
+        restoreKeyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2183,7 +2176,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getKeyVersions({});
@@ -2195,11 +2188,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getKeyVersionsPromise = ibmKeyProtectApiService.getKeyVersions();
         expectToBePromise(getKeyVersionsPromise);
 
-        getKeyVersionsPromise.catch(err => {
+        getKeyVersionsPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2295,7 +2288,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.putPolicy({});
@@ -2307,11 +2300,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const putPolicyPromise = ibmKeyProtectApiService.putPolicy();
         expectToBePromise(putPolicyPromise);
 
-        putPolicyPromise.catch(err => {
+        putPolicyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2377,7 +2370,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getPolicy({});
@@ -2389,11 +2382,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getPolicyPromise = ibmKeyProtectApiService.getPolicy();
         expectToBePromise(getPolicyPromise);
 
-        getPolicyPromise.catch(err => {
+        getPolicyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2487,7 +2480,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.putInstancePolicy({});
@@ -2499,11 +2492,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const putInstancePolicyPromise = ibmKeyProtectApiService.putInstancePolicy();
         expectToBePromise(putInstancePolicyPromise);
 
-        putInstancePolicyPromise.catch(err => {
+        putInstancePolicyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2561,7 +2554,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getInstancePolicy({});
@@ -2573,11 +2566,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getInstancePolicyPromise = ibmKeyProtectApiService.getInstancePolicy();
         expectToBePromise(getInstancePolicyPromise);
 
-        getInstancePolicyPromise.catch(err => {
+        getInstancePolicyPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2632,7 +2625,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getAllowedIpPort({});
@@ -2644,11 +2637,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getAllowedIpPortPromise = ibmKeyProtectApiService.getAllowedIpPort();
         expectToBePromise(getAllowedIpPortPromise);
 
-        getAllowedIpPortPromise.catch(err => {
+        getAllowedIpPortPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2728,7 +2721,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getRegistrations({});
@@ -2740,11 +2733,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getRegistrationsPromise = ibmKeyProtectApiService.getRegistrations();
         expectToBePromise(getRegistrationsPromise);
 
-        getRegistrationsPromise.catch(err => {
+        getRegistrationsPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
@@ -2775,9 +2768,8 @@ describe('IbmKeyProtectApiV2', () => {
           totalCount: totalCount,
         };
 
-        const getRegistrationsAllKeysResult = ibmKeyProtectApiService.getRegistrationsAllKeys(
-          params
-        );
+        const getRegistrationsAllKeysResult =
+          ibmKeyProtectApiService.getRegistrationsAllKeys(params);
 
         // all methods should return a Promise
         expectToBePromise(getRegistrationsAllKeysResult);
@@ -2820,7 +2812,7 @@ describe('IbmKeyProtectApiV2', () => {
     });
 
     describe('negative tests', () => {
-      test('should enforce required parameters', async done => {
+      test('should enforce required parameters', async (done) => {
         let err;
         try {
           await ibmKeyProtectApiService.getRegistrationsAllKeys({});
@@ -2832,11 +2824,11 @@ describe('IbmKeyProtectApiV2', () => {
         done();
       });
 
-      test('should reject promise when required params are not given', done => {
+      test('should reject promise when required params are not given', (done) => {
         const getRegistrationsAllKeysPromise = ibmKeyProtectApiService.getRegistrationsAllKeys();
         expectToBePromise(getRegistrationsAllKeysPromise);
 
-        getRegistrationsAllKeysPromise.catch(err => {
+        getRegistrationsAllKeysPromise.catch((err) => {
           expect(err.message).toMatch(/Missing required parameters/);
           done();
         });
