@@ -36,7 +36,7 @@ describe('key protect v2 integration', () => {
   let instanceGuid;
 
   // Set up - create test instance and key, this also serves as creating key test
-  beforeAll(async done => {
+  beforeAll(async (done) => {
     const resourceControllerService = new ResourceControllerV2(resourceControllerClient);
     const instance_params = {
       name: 'testInstance',
@@ -47,14 +47,14 @@ describe('key protect v2 integration', () => {
 
     resourceControllerService
       .createResourceInstance(instance_params)
-      .then(res => {
+      .then((res) => {
         instanceGuid = res.result.guid;
       })
-      .catch(err => {
+      .catch((err) => {
         done(err);
       });
     // wait 30 seconds for completion of creating instance
-    await new Promise(r => setTimeout(r, 30000));
+    await new Promise((r) => setTimeout(r, 30000));
     options.bluemixInstance = instanceGuid;
     const body = {
       metadata: {
@@ -85,7 +85,7 @@ describe('key protect v2 integration', () => {
   });
 
   // Tear down - delete the test instance and key
-  afterAll(async done => {
+  afterAll(async (done) => {
     try {
       const deleteKeyParams = Object.assign({}, options);
       deleteKeyParams.id = keyId;
@@ -103,7 +103,7 @@ describe('key protect v2 integration', () => {
     const maxRetrievals = 30;
     const expiration = '80000';
 
-    it('createImportToken', async done => {
+    it('createImportToken', async (done) => {
       let response;
       const createTokenParams = Object.assign({}, options);
       createTokenParams.maxAllowedRetrievals = maxRetrievals;
@@ -120,7 +120,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getImportToken', async done => {
+    it('getImportToken', async (done) => {
       let response;
       try {
         response = await keyProtectClient.getImportToken(options);
@@ -145,7 +145,7 @@ describe('key protect v2 integration', () => {
     const samplePayload = 'ODg4ODg4ODg4ODg4ODg4OA==';
     const samplePayloadForRotation = 'SXQgaXMgYSByZWFsbHkgaW1wb3J0YW50IG1lc3NhZ2U=';
 
-    it('getKeyCollectionMetadata', async done => {
+    it('getKeyCollectionMetadata', async (done) => {
       let response;
       try {
         response = await keyProtectClient.getKeyCollectionMetadata(options);
@@ -159,7 +159,7 @@ describe('key protect v2 integration', () => {
     });
 
     // import a key too.
-    it('importKey', async done => {
+    it('importKey', async (done) => {
       const body = {
         metadata: {
           collectionType: 'application/vnd.ibm.kms.key+json',
@@ -194,7 +194,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getKeys', async done => {
+    it('getKeys', async (done) => {
       let response;
       try {
         response = await keyProtectClient.getKeys(options);
@@ -207,7 +207,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getKey', async done => {
+    it('getKey', async (done) => {
       let response;
       try {
         const getKeyParams = Object.assign({}, options);
@@ -222,7 +222,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('wrapKey', async done => {
+    it('wrapKey', async (done) => {
       let response;
       try {
         const wrapKeyParams = Object.assign({}, options);
@@ -240,7 +240,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('unwrapKey', async done => {
+    it('unwrapKey', async (done) => {
       let response;
       try {
         const unwrapKeyParams = Object.assign({}, options);
@@ -259,7 +259,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('rewrapKey', async done => {
+    it('rewrapKey', async (done) => {
       let response;
       try {
         const rewrapKeyParams = Object.assign({}, options);
@@ -277,7 +277,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('rotateKey', async done => {
+    it('rotateKey', async (done) => {
       let response;
       try {
         const rotateKeyParams = Object.assign({}, options);
@@ -293,7 +293,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('rotateImportedKey', async done => {
+    it('rotateImportedKey', async (done) => {
       let response;
       try {
         const rotateKeyParams = Object.assign({}, options);
@@ -312,7 +312,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getKeyVersions', async done => {
+    it('getKeyVersions', async (done) => {
       let response;
       try {
         const getKeyVersionsParams = Object.assign({}, options);
@@ -329,7 +329,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('disableKey', async done => {
+    it('disableKey', async (done) => {
       let response;
       try {
         const disableKeyParams = Object.assign({}, options);
@@ -344,11 +344,11 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('enableKey', async done => {
+    it('enableKey', async (done) => {
       let response;
       try {
         // wait for 30 seconds after the key was disabled
-        await new Promise(r => setTimeout(r, 30000));
+        await new Promise((r) => setTimeout(r, 30000));
         const enableKeyParams = Object.assign({}, options);
         enableKeyParams.id = keyId;
         response = await keyProtectClient.enableKey(enableKeyParams);
@@ -361,7 +361,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('deleteImportedKey', async done => {
+    it('deleteImportedKey', async (done) => {
       let response;
       try {
         const deleteImportedKeyParams = Object.assign({}, options);
@@ -378,7 +378,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('deleteKey', async done => {
+    it('deleteKey', async (done) => {
       let response;
       try {
         const deleteKeyParams = Object.assign({}, options);
@@ -396,7 +396,7 @@ describe('key protect v2 integration', () => {
     });
 
     // purge key should be done 4 hrs after key deletion, so expect to get error
-    it('purgeKey', async done => {
+    it('purgeKey', async (done) => {
       try {
         const purgeKeyParams = Object.assign({}, options);
         purgeKeyParams.id = keyId;
@@ -409,7 +409,7 @@ describe('key protect v2 integration', () => {
     });
 
     // syncAssociatedResource key should be done 1 hrs after any key operations, so expect to get error
-    it('syncAssociatedResource', async done => {
+    it('syncAssociatedResource', async (done) => {
       try {
         const syncParams = Object.assign({}, options);
         syncParams.id = keyId;
@@ -420,9 +420,9 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('retoreKey', async done => {
+    it('retoreKey', async (done) => {
       // wait for 30 seconds after the key was deleted
-      await new Promise(r => setTimeout(r, 30000));
+      await new Promise((r) => setTimeout(r, 30000));
       let response;
       try {
         const restoreKeyParams = Object.assign({}, options);
@@ -439,7 +439,7 @@ describe('key protect v2 integration', () => {
 
   describe('key policies', () => {
     const interval = 2;
-    it('setRotationPolicyOnKey', async done => {
+    it('setRotationPolicyOnKey', async (done) => {
       let response;
       try {
         const rotationPolicyKeyParams = Object.assign({}, options);
@@ -470,7 +470,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('setDualauthPolicyOnKey', async done => {
+    it('setDualauthPolicyOnKey', async (done) => {
       let response;
       try {
         const dualauthPolicyKeyParams = Object.assign({}, options);
@@ -501,7 +501,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getKeyPolicy', async done => {
+    it('getKeyPolicy', async (done) => {
       let response;
       try {
         const getKeyPolicyParams = Object.assign({}, options);
@@ -528,7 +528,7 @@ describe('key protect v2 integration', () => {
   });
 
   describe('instance policies', () => {
-    it('setDualAuthInstancePolicy', async done => {
+    it('setDualAuthInstancePolicy', async (done) => {
       let response;
       try {
         const putInstancePolicyParams = Object.assign({}, options);
@@ -554,7 +554,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('setAllowedNetworkInstancePolicy', async done => {
+    it('setAllowedNetworkInstancePolicy', async (done) => {
       let response;
       try {
         const putInstancePolicyParams = Object.assign({}, options);
@@ -581,7 +581,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getInstancePolicy', async done => {
+    it('getInstancePolicy', async (done) => {
       let response;
       try {
         response = await keyProtectClient.getInstancePolicy(options);
@@ -610,7 +610,7 @@ describe('key protect v2 integration', () => {
 
   describe('key alias', () => {
     const keyAlias = 'nodejsKeyAlias';
-    it('createKeyAlias', async done => {
+    it('createKeyAlias', async (done) => {
       let response;
       try {
         const createKeyAliasParams = Object.assign({}, options);
@@ -625,7 +625,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getKeyByAlias', async done => {
+    it('getKeyByAlias', async (done) => {
       let response;
       try {
         const getKeyAliasParams = Object.assign({}, options);
@@ -639,7 +639,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('deleteKeyAlias', async done => {
+    it('deleteKeyAlias', async (done) => {
       let response;
       try {
         const deleteKeyAliasParams = Object.assign({}, options);
@@ -657,12 +657,8 @@ describe('key protect v2 integration', () => {
 
   describe('key ring', () => {
     // create unique key ring id
-    const keyRingId =
-      'testNodeSdkKeyRingId' +
-      Math.random()
-        .toString(36)
-        .substring(7);
-    it('createKeyRing', async done => {
+    const keyRingId = 'testNodeSdkKeyRingId' + Math.random().toString(36).substring(7);
+    it('createKeyRing', async (done) => {
       let response;
       try {
         const createKeyRingParams = Object.assign({}, options);
@@ -676,7 +672,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('listKeyRings', async done => {
+    it('listKeyRings', async (done) => {
       let response;
       try {
         response = await keyProtectClient.listKeyRings(options);
@@ -694,7 +690,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('transferKeyRing', async done => {
+    it('transferKeyRing', async (done) => {
       let response;
       try {
         const transferKeyringParams = Object.assign({}, options);
@@ -726,7 +722,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('deleteKeyRing', async done => {
+    it('deleteKeyRing', async (done) => {
       let response;
       try {
         const deleteKeyRingParams = Object.assign({}, options);
@@ -743,7 +739,7 @@ describe('key protect v2 integration', () => {
   });
 
   describe('registration', () => {
-    it('getRegistrations', async done => {
+    it('getRegistrations', async (done) => {
       let response;
       const getRegistrationsParams = Object.assign({}, options);
       getRegistrationsParams.id = keyId;
@@ -761,7 +757,7 @@ describe('key protect v2 integration', () => {
       done();
     });
 
-    it('getRegistrationsAllKeys', async done => {
+    it('getRegistrationsAllKeys', async (done) => {
       let response;
       try {
         response = await keyProtectClient.getRegistrationsAllKeys(options);

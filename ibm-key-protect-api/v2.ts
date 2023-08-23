@@ -18,7 +18,7 @@
  * IBM OpenAPI SDK Code Generator Version: 3.78.0-67aec9b7-20230818-174940
  */
 
-/* eslint-disable max-classes-per-file */
+/* eslint max-classes-per-file */
 /* eslint-disable no-await-in-loop */
 
 import * as extend from 'extend';
@@ -26,12 +26,12 @@ import { IncomingHttpHeaders, OutgoingHttpHeaders } from 'http';
 import {
   Authenticator,
   BaseService,
-  SDKLogger,
-  UserOptions,
   constructServiceUrl,
   getAuthenticatorFromEnvironment,
   getNewLogger,
   getQueryParam,
+  SDKLogger,
+  UserOptions,
   validateParams,
 } from 'ibm-cloud-sdk-core';
 import { getSdkHeaders } from '../lib/common';
@@ -54,10 +54,6 @@ class IbmKeyProtectApiV2 extends BaseService {
   static DEFAULT_SERVICE_NAME: string = 'ibm_key_protect_api';
 
   static PARAMETERIZED_SERVICE_URL: string = 'https://{region}.kms.cloud.ibm.com';
-
-  private static defaultUrlVariables = new Map([
-    ['region', 'us-south'],
-  ]);
 
   /**
    * Constructs a service URL by formatting the parameterized service URL.
@@ -111,6 +107,10 @@ class IbmKeyProtectApiV2 extends BaseService {
     }
     return service;
   }
+
+  private static defaultUrlVariables = new Map([
+    ['region', 'us-south'],
+  ]);
 
   /**
    * Construct a IbmKeyProtectApiV2 object.
