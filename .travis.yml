@@ -10,7 +10,7 @@ cache:
 before_install:
 - npm i -g npm@8
 - npm --version
-- npm ci --legacy-peer-deps
+- npm install --legacy-peer-deps
 
 script:
 - npm run build
