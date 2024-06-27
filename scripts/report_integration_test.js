@@ -53,7 +53,7 @@ if (process.env.TRAVIS_PULL_REQUEST && process.env.TRAVIS_PULL_REQUEST !== 'fals
     .post(
       `https://api.github.com/repos/${process.env.TRAVIS_REPO_SLUG}/issues/${process.env.TRAVIS_PULL_REQUEST}/comments`,
       {
-        body: body,
+        body,
       },
       {
         headers: {

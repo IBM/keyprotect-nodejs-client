@@ -26,7 +26,7 @@
  /**
   * Get the request headers to be sent in requests by the SDK.
   */
- export function getSdkHeaders(serviceName: string, serviceVersion: string, operationId: string): SdkHeaders | {} {
+ export function getSdkHeaders(serviceName: string, serviceVersion: string, operationId: string): SdkHeaders | object {
    const sdkName = 'keyprotect-nodejs-sdk';
    const sdkVersion = pkg.version;
    const osName = os.platform();
