@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.2.1...v0.3.0) (2024-06-27)
+
+
+### Features
+
+* **build:** regenerate code with KMIP Mgmt APIs ([#40](https://github.com/IBM/keyprotect-nodejs-client/issues/40)) ([778951b](https://github.com/IBM/keyprotect-nodejs-client/commit/778951b29a1328e17c7483572c829bca22197c1f))
+
 ## [0.2.1](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.2.0...v0.2.1) (2024-01-23)
 
 
