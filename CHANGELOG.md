@@ -1,3 +1,10 @@
+# [0.4.0](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.3.0...v0.4.0) (2024-08-19)
+
+
+### Features
+
+* **build:** upgrade axios ([#41](https://github.com/IBM/keyprotect-nodejs-client/issues/41)) ([8694bc2](https://github.com/IBM/keyprotect-nodejs-client/commit/8694bc2fc9639823d1e92e33264d0222d7d0777f))
+
 # [0.3.0](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.2.1...v0.3.0) (2024-06-27)
 
 
