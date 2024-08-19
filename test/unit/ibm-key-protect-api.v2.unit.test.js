@@ -16,17 +16,16 @@
 
 // need to import the whole package to mock getAuthenticatorFromEnvironment
 const sdkCorePackage = require('ibm-cloud-sdk-core');
-
-const { NoAuthAuthenticator, unitTestUtils } = sdkCorePackage;
-const IbmKeyProtectApiV2 = require('../../dist/ibm-key-protect-api/v2');
-
 const {
   getOptions,
   checkUrlAndMethod,
   checkMediaHeaders,
   expectToBePromise,
   checkUserHeader,
-} = unitTestUtils;
+  checkForSuccessfulExecution,
+} = require('@ibm-cloud/sdk-test-utilities');
+const { NoAuthAuthenticator, unitTestUtils } = sdkCorePackage;
+const IbmKeyProtectApiV2 = require('../../dist/ibm-key-protect-api/v2');
 
 const ibmKeyProtectApiServiceOptions = {
   authenticator: new NoAuthAuthenticator(),
