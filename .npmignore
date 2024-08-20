@@ -1,16 +1,12 @@
 ### Specific to this repository ###
 # tsc outputs
-lib/*.js
-auth/*.js
-**/*.d.ts
-**/*.js.map
 examples/
 
 # file holding service credentials
 test/resources/auth.js
 
 # release folder for typescript-generated source files
-dist/
+# dist/
 
 ### GitHub recommended ###
 # Logs
