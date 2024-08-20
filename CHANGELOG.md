@@ -1,3 +1,10 @@
+## [0.4.1](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.0...v0.4.1) (2024-08-20)
+
+
+### Bug Fixes
+
+* **build:** Revert NPMIgnore ([#42](https://github.com/IBM/keyprotect-nodejs-client/issues/42)) ([345382a](https://github.com/IBM/keyprotect-nodejs-client/commit/345382a5609973701e71d35719490d253d05873f))
+
 # [0.4.0](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.3.0...v0.4.0) (2024-08-19)
 
 
