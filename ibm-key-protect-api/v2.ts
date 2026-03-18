@@ -1042,7 +1042,7 @@ class IbmKeyProtectApiV2 extends BaseService {
     params: IbmKeyProtectApiV2.RestoreKeyParams
   ): Promise<IbmKeyProtectApiV2.Response<NodeJS.ReadableStream>> {
     const _params = { ...params };
-    const _requiredParams = ['id', 'bluemixInstance', 'keyRestoreBody'];
+    const _requiredParams = ['id', 'bluemixInstance'];
     const _validParams = ['id', 'bluemixInstance', 'keyRestoreBody', 'correlationId', 'xKmsKeyRing', 'prefer', 'headers'];
     const _validationErrors = validateParams(_params, _requiredParams, _validParams);
     if (_validationErrors) {
