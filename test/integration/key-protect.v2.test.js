@@ -15,6 +15,12 @@ describe('key protect v2 integration', () => {
   const options = authHelper.auth.keyProtect;
   let keyId;
 
+  // Helper function to get valid API parameters
+  const getValidParams = () => ({
+    bluemixInstance: instanceGuid,
+    correlationId: options.correlationId,
+  });
+
   // Create an IAM authenticator.
   const authenticator = new IamAuthenticator({
     apikey: options.apiKey,
@@ -36,7 +42,7 @@ describe('key protect v2 integration', () => {
   let instanceGuid;
 
   // Set up - create test instance and key, this also serves as creating key test
-  beforeAll(async (done) => {
+  beforeAll(async () => {
     const resourceControllerService = new ResourceControllerV2(resourceControllerClient);
     const instance_params = {
       name: 'testInstance',
@@ -45,18 +51,14 @@ describe('key protect v2 integration', () => {
       resourcePlanId: 'eedd3585-90c6-4c8f-be3d-062069e99fc3', // keyprotect tiered-pricing ID
     };
 
-    resourceControllerService
-      .createResourceInstance(instance_params)
-      .then((res) => {
-        instanceGuid = res.result.guid;
-      })
-      .catch((err) => {
-        done(err);
-      });
+    const instanceResponse = await resourceControllerService.createResourceInstance(instance_params);
+    instanceGuid = instanceResponse.result.guid;
+    console.log('Created instance with GUID:', instanceGuid);
+
     // wait 30 seconds for completion of creating instance
     await new Promise((r) => setTimeout(r, 30000));
-    options.bluemixInstance = instanceGuid;
-    const body = {
+    
+    const keyCreateBody = {
       metadata: {
         collectionType: 'application/vnd.ibm.kms.key+json',
         collectionTotal: 1,
@@ -69,72 +71,67 @@ describe('key protect v2 integration', () => {
         },
       ],
     };
-    const createParams = Object.assign({}, options);
-    createParams.body = body;
+    
+    const createParams = {
+      bluemixInstance: instanceGuid,
+      keyCreateBody: keyCreateBody,
+      correlationId: options.correlationId,
+    };
 
-    let response;
-    try {
-      response = await keyProtectClient.createKey(createParams);
-    } catch (err) {
-      done(err);
-    }
+    console.log('Creating key with params:', JSON.stringify(createParams, null, 2));
+    const response = await keyProtectClient.createKey(createParams);
+    console.log('Create key response:', JSON.stringify(response, null, 2));
 
     // save the created key id to use in later tests
-    keyId = response.result.resources[0].id;
-    done();
+    if (response && response.result && response.result.resources && response.result.resources[0]) {
+      keyId = response.result.resources[0].id;
+      console.log('Created key with ID:', keyId);
+    } else {
+      throw new Error('Invalid response structure: ' + JSON.stringify(response));
+    }
   });
 
   // Tear down - delete the test instance and key
-  afterAll(async (done) => {
-    try {
-      const deleteKeyParams = Object.assign({}, options);
-      deleteKeyParams.id = keyId;
-      deleteKeyParams.prefer = 'return=representation';
-      await keyProtectClient.deleteKey(deleteKeyParams);
-      await resourceControllerClient.deleteResourceInstance({ id: instanceGuid });
-    } catch (err) {
-      done(err);
-    }
-
-    done();
+  afterAll(async () => {
+    const deleteKeyParams = {
+      bluemixInstance: instanceGuid,
+      id: keyId,
+      prefer: 'return=representation',
+      correlationId: options.correlationId,
+    };
+    await keyProtectClient.deleteKey(deleteKeyParams);
+    
+    const resourceControllerService = new ResourceControllerV2(resourceControllerClient);
+    await resourceControllerService.deleteResourceInstance({ id: instanceGuid });
+    
+    console.log('Cleanup completed successfully');
   });
 
   describe('import token', () => {
     const maxRetrievals = 30;
-    const expiration = '80000';
+    const expiration = 80000; // seconds (must be a number, not string)
 
-    it('createImportToken', async (done) => {
-      let response;
-      const createTokenParams = Object.assign({}, options);
-      createTokenParams.maxAllowedRetrievals = maxRetrievals;
-      createTokenParams.expirationDate = expiration;
-      try {
-        response = await keyProtectClient.postImportToken(createTokenParams);
-      } catch (err) {
-        done(err);
-      }
+    it('createImportToken', async () => {
+      const createTokenParams = {
+        ...getValidParams(),
+        maxAllowedRetrievals: maxRetrievals,
+        expiration: expiration,
+      };
+      const response = await keyProtectClient.postImportToken(createTokenParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.maxAllowedRetrievals).toBeDefined();
       expect(response.result.expirationDate).toBeDefined();
-      done();
     });
 
-    it('getImportToken', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.getImportToken(options);
-      } catch (err) {
-        done(err);
-      }
+    it('getImportToken', async () => {
+      const response = await keyProtectClient.getImportToken(getValidParams());
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.maxAllowedRetrievals).toEqual(maxRetrievals);
       expect(response.result.expirationDate).toBeDefined();
       expect(response.result.payload).toBeDefined();
       expect(response.result.nonce).toBeDefined();
-
-      done();
     });
   });
 
@@ -145,22 +142,16 @@ describe('key protect v2 integration', () => {
     const samplePayload = 'ODg4ODg4ODg4ODg4ODg4OA==';
     const samplePayloadForRotation = 'SXQgaXMgYSByZWFsbHkgaW1wb3J0YW50IG1lc3NhZ2U=';
 
-    it('getKeyCollectionMetadata', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.getKeyCollectionMetadata(options);
-      } catch (err) {
-        done(err);
-      }
+    it('getKeyCollectionMetadata', async () => {
+      const response = await keyProtectClient.getKeyCollectionMetadata(getValidParams());
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.headers['key-total']).toBeDefined();
-      done();
     });
 
     // import a key too.
-    it('importKey', async (done) => {
-      const body = {
+    it('importKey', async () => {
+      const keyCreateBody = {
         metadata: {
           collectionType: 'application/vnd.ibm.kms.key+json',
           collectionTotal: 1,
@@ -174,278 +165,124 @@ describe('key protect v2 integration', () => {
           },
         ],
       };
-      const createParams = Object.assign({}, options);
-      createParams.body = body;
+      const createParams = {
+        ...getValidParams(),
+        keyCreateBody: keyCreateBody,
+      };
 
-      let response;
-      try {
-        response = await keyProtectClient.createKey(createParams);
-      } catch (err) {
-        done(err);
-      }
-
+      const response = await keyProtectClient.createKey(createParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(201);
       expect(response.result.resources[0].id).toBeDefined();
 
       // save the imported key id to use in later tests
       importedKeyID = response.result.resources[0].id;
-
-      done();
     });
 
-    it('getKeys', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.getKeys(options);
-      } catch (err) {
-        done(err);
-      }
+    it('getKeys', async () => {
+      const response = await keyProtectClient.getKeys(getValidParams());
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.resources).toBeDefined();
-      done();
     });
 
-    it('getKey', async (done) => {
-      let response;
-      try {
-        const getKeyParams = Object.assign({}, options);
-        getKeyParams.id = keyId;
-        response = await keyProtectClient.getKey(getKeyParams);
-      } catch (err) {
-        done(err);
-      }
+    it('getKey', async () => {
+      const getKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.getKey(getKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.resources[0].id).toEqual(keyId);
-      done();
     });
 
-    it('wrapKey', async (done) => {
-      let response;
-      try {
-        const wrapKeyParams = Object.assign({}, options);
-        wrapKeyParams.id = keyId;
-        wrapKeyParams.keyActionWrapBody = {
+    it('wrapKey', async () => {
+      const wrapKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        keyActionWrapBody: {
           plaintext: samplePlaintext,
-        };
-        response = await keyProtectClient.wrapKey(wrapKeyParams);
-      } catch (err) {
-        done(err);
-      }
+        },
+      };
+      const response = await keyProtectClient.wrapKey(wrapKeyParams);
       ciphertextResult = response.result.ciphertext;
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
-      done();
     });
 
-    it('unwrapKey', async (done) => {
-      let response;
-      try {
-        const unwrapKeyParams = Object.assign({}, options);
-        unwrapKeyParams.id = keyId;
-        unwrapKeyParams.keyActionUnwrapBody = {
+    it('unwrapKey', async () => {
+      const unwrapKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        keyActionUnwrapBody: {
           ciphertext: ciphertextResult,
-        };
-        response = await keyProtectClient.unwrapKey(unwrapKeyParams);
-      } catch (err) {
-        done(err);
-      }
+        },
+      };
+      const response = await keyProtectClient.unwrapKey(unwrapKeyParams);
       const plaintextResult = response.result.plaintext;
       expect(response).toBeDefined();
       expect(plaintextResult).toEqual(samplePlaintext);
       expect(response.status).toEqual(200);
-      done();
     });
 
-    it('rewrapKey', async (done) => {
-      let response;
-      try {
-        const rewrapKeyParams = Object.assign({}, options);
-        rewrapKeyParams.id = keyId;
-        rewrapKeyParams.keyActionRewrapBody = {
+    it('rewrapKey', async () => {
+      const rewrapKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        keyActionRewrapBody: {
           ciphertext: ciphertextResult,
-        };
-
-        response = await keyProtectClient.rewrapKey(rewrapKeyParams);
-      } catch (err) {
-        done(err);
-      }
+        },
+      };
+      const response = await keyProtectClient.rewrapKey(rewrapKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
-      done();
     });
 
-    it('rotateKey', async (done) => {
-      let response;
-      try {
-        const rotateKeyParams = Object.assign({}, options);
-        rotateKeyParams.id = keyId;
-        rotateKeyParams.keyActionRotateBody = {};
-        response = await keyProtectClient.rotateKey(rotateKeyParams);
-      } catch (err) {
-        done(err);
-      }
-
+    it('rotateKey', async () => {
+      const rotateKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        keyActionRotateBody: {},
+      };
+      const response = await keyProtectClient.rotateKey(rotateKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(204);
-      done();
     });
 
-    it('rotateImportedKey', async (done) => {
-      let response;
-      try {
-        const rotateKeyParams = Object.assign({}, options);
-        rotateKeyParams.id = importedKeyID;
-        rotateKeyParams.keyActionRotateBody = {
+    it('rotateImportedKey', async () => {
+      const rotateKeyParams = {
+        ...getValidParams(),
+        id: importedKeyID,
+        keyActionRotateBody: {
           payload: samplePayloadForRotation,
-        };
-
-        response = await keyProtectClient.rotateKey(rotateKeyParams);
-      } catch (err) {
-        done(err);
-      }
-
+        },
+      };
+      const response = await keyProtectClient.rotateKey(rotateKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(204);
-      done();
     });
 
-    it('getKeyVersions', async (done) => {
-      let response;
-      try {
-        const getKeyVersionsParams = Object.assign({}, options);
-        getKeyVersionsParams.id = keyId;
-
-        response = await keyProtectClient.getKeyVersions(getKeyVersionsParams);
-      } catch (err) {
-        done(err);
-      }
+    it('getKeyVersions', async () => {
+      const getKeyVersionsParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.getKeyVersions(getKeyVersionsParams);
       expect(response.result.metadata.collectionTotal).toEqual(2);
       expect(response.result.resources[0].id).not.toEqual(response.result.resources[1].id);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
-      done();
     });
 
-    it('disableKey', async (done) => {
-      let response;
-      try {
-        const disableKeyParams = Object.assign({}, options);
-        disableKeyParams.id = keyId;
-        response = await keyProtectClient.disableKey(disableKeyParams);
-      } catch (err) {
-        done(err);
-      }
-
-      expect(response).toBeDefined();
-      expect(response.status).toEqual(204);
-      done();
-    });
-
-    it('enableKey', async (done) => {
-      let response;
-      try {
-        // wait for 30 seconds after the key was disabled
-        await new Promise((r) => setTimeout(r, 30000));
-        const enableKeyParams = Object.assign({}, options);
-        enableKeyParams.id = keyId;
-        response = await keyProtectClient.enableKey(enableKeyParams);
-      } catch (err) {
-        done(err);
-      }
-
-      expect(response).toBeDefined();
-      expect(response.status).toEqual(204);
-      done();
-    });
-
-    it('deleteImportedKey', async (done) => {
-      let response;
-      try {
-        const deleteImportedKeyParams = Object.assign({}, options);
-        deleteImportedKeyParams.id = importedKeyID;
-        deleteImportedKeyParams.prefer = 'return=representation';
-        response = await keyProtectClient.deleteKey(deleteImportedKeyParams);
-      } catch (err) {
-        done(err);
-      }
-      expect(response).toBeDefined();
-      expect(response.status).toEqual(200);
-      expect(response.result.resources).toBeDefined();
-      expect(response.result.resources[0].id).toEqual(importedKeyID);
-      done();
-    });
-
-    it('deleteKey', async (done) => {
-      let response;
-      try {
-        const deleteKeyParams = Object.assign({}, options);
-        deleteKeyParams.id = keyId;
-        deleteKeyParams.prefer = 'return=representation';
-        response = await keyProtectClient.deleteKey(deleteKeyParams);
-      } catch (err) {
-        done(err);
-      }
-      expect(response).toBeDefined();
-      expect(response.status).toEqual(200);
-      expect(response.result.resources).toBeDefined();
-      expect(response.result.resources[0].id).toEqual(keyId);
-      done();
-    });
-
-    // purge key should be done 4 hrs after key deletion, so expect to get error
-    it('purgeKey', async (done) => {
-      try {
-        const purgeKeyParams = Object.assign({}, options);
-        purgeKeyParams.id = keyId;
-        purgeKeyParams.prefer = 'return=representation';
-        await keyProtectClient.purgeKey(purgeKeyParams);
-      } catch (err) {
-        expect(err.body).toContain('REQ_TOO_EARLY_ERR');
-      }
-      done();
-    });
-
-    // syncAssociatedResource key should be done 1 hrs after any key operations, so expect to get error
-    it('syncAssociatedResource', async (done) => {
-      try {
-        const syncParams = Object.assign({}, options);
-        syncParams.id = keyId;
-        await keyProtectClient.syncAssociatedResources(syncParams);
-      } catch (err) {
-        expect(err.body).toContain('REQ_TOO_EARLY_ERR');
-      }
-      done();
-    });
-
-    it('retoreKey', async (done) => {
-      // wait for 30 seconds after the key was deleted
-      await new Promise((r) => setTimeout(r, 30000));
-      let response;
-      try {
-        const restoreKeyParams = Object.assign({}, options);
-        restoreKeyParams.id = keyId;
-        response = await keyProtectClient.restoreKey(restoreKeyParams);
-      } catch (err) {
-        done(err);
-      }
-      expect(response).toBeDefined();
-      expect(response.status).toEqual(201);
-      done();
-    });
-  });
-
-  describe('key policies', () => {
-    const interval = 2;
-    it('setRotationPolicyOnKey', async (done) => {
-      let response;
-      try {
-        const rotationPolicyKeyParams = Object.assign({}, options);
-        rotationPolicyKeyParams.id = keyId;
-        rotationPolicyKeyParams.policy = 'rotation';
-        rotationPolicyKeyParams.setKeyPoliciesOneOf = {
+    // Key policies tests - must run before key is deleted
+    it('setRotationPolicyOnKey', async () => {
+      const interval = 2;
+      const rotationPolicyKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        policy: 'rotation',
+        keyPolicyPutBody: {
           metadata: {
             collectionType: 'application/vnd.ibm.kms.policy+json',
             collectionTotal: 1,
@@ -458,25 +295,21 @@ describe('key protect v2 integration', () => {
               },
             },
           ],
-        };
+        },
+      };
 
-        response = await keyProtectClient.putPolicy(rotationPolicyKeyParams);
-      } catch (err) {
-        done(err);
-      }
+      const response = await keyProtectClient.putPolicy(rotationPolicyKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.resources[0].rotation.interval_month).toEqual(interval);
-      done();
     });
 
-    it('setDualauthPolicyOnKey', async (done) => {
-      let response;
-      try {
-        const dualauthPolicyKeyParams = Object.assign({}, options);
-        dualauthPolicyKeyParams.id = keyId;
-        dualauthPolicyKeyParams.policy = 'dualAuthDelete';
-        dualauthPolicyKeyParams.setKeyPoliciesOneOf = {
+    it('setDualauthPolicyOnKey', async () => {
+      const dualauthPolicyKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        policy: 'dualAuthDelete',
+        keyPolicyPutBody: {
           metadata: {
             collectionType: 'application/vnd.ibm.kms.policy+json',
             collectionTotal: 1,
@@ -489,27 +322,22 @@ describe('key protect v2 integration', () => {
               },
             },
           ],
-        };
+        },
+      };
 
-        response = await keyProtectClient.putPolicy(dualauthPolicyKeyParams);
-      } catch (err) {
-        done(err);
-      }
+      const response = await keyProtectClient.putPolicy(dualauthPolicyKeyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.resources[0].dualAuthDelete.enabled).toBeFalsy();
-      done();
     });
 
-    it('getKeyPolicy', async (done) => {
-      let response;
-      try {
-        const getKeyPolicyParams = Object.assign({}, options);
-        getKeyPolicyParams.id = keyId;
-        response = await keyProtectClient.getPolicy(getKeyPolicyParams);
-      } catch (err) {
-        done(err);
-      }
+    it('getKeyPolicy', async () => {
+      const interval = 2;
+      const getKeyPolicyParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.getPolicy(getKeyPolicyParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.metadata.collectionTotal).toEqual(2);
@@ -523,16 +351,101 @@ describe('key protect v2 integration', () => {
         expect(rsrcs[1].rotation.interval_month).toEqual(interval);
         expect(rsrcs[0].dualAuthDelete.enabled).toBeFalsy();
       }
-      done();
+    });
+
+    it('disableKey', async () => {
+      const disableKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.disableKey(disableKeyParams);
+      expect(response).toBeDefined();
+      expect(response.status).toEqual(204);
+    });
+
+    it('enableKey', async () => {
+      // wait for 30 seconds after the key was disabled
+      await new Promise((r) => setTimeout(r, 30000));
+      const enableKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.enableKey(enableKeyParams);
+      expect(response).toBeDefined();
+      expect(response.status).toEqual(204);
+    });
+
+    it('deleteImportedKey', async () => {
+      const deleteImportedKeyParams = {
+        ...getValidParams(),
+        id: importedKeyID,
+        prefer: 'return=representation',
+      };
+      const response = await keyProtectClient.deleteKey(deleteImportedKeyParams);
+      expect(response).toBeDefined();
+      expect(response.status).toEqual(200);
+      expect(response.result.resources).toBeDefined();
+      expect(response.result.resources[0].id).toEqual(importedKeyID);
+    });
+
+    it('deleteKey', async () => {
+      const deleteKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+        prefer: 'return=representation',
+      };
+      const response = await keyProtectClient.deleteKey(deleteKeyParams);
+      expect(response).toBeDefined();
+      expect(response.status).toEqual(200);
+      expect(response.result.resources).toBeDefined();
+      expect(response.result.resources[0].id).toEqual(keyId);
+    });
+
+    // purge key should be done 4 hrs after key deletion, so expect to get error
+    it('purgeKey', async () => {
+      try {
+        const purgeKeyParams = {
+          ...getValidParams(),
+          id: keyId,
+          prefer: 'return=representation',
+        };
+        await keyProtectClient.purgeKey(purgeKeyParams);
+      } catch (err) {
+        expect(err.body).toContain('REQ_TOO_EARLY_ERR');
+      }
+    });
+
+    // syncAssociatedResource key should be done 1 hrs after any key operations, so expect to get error
+    it('syncAssociatedResource', async () => {
+      try {
+        const syncParams = {
+          ...getValidParams(),
+          id: keyId,
+        };
+        await keyProtectClient.syncAssociatedResources(syncParams);
+      } catch (err) {
+        expect(err.body).toContain('REQ_TOO_EARLY_ERR');
+      }
+    });
+
+    it('restoreKey', async () => {
+      // wait for 30 seconds after the key was deleted
+      await new Promise((r) => setTimeout(r, 30000));
+      const restoreKeyParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.restoreKey(restoreKeyParams);
+      expect(response).toBeDefined();
+      expect(response.status).toEqual(201);
     });
   });
 
   describe('instance policies', () => {
-    it('setDualAuthInstancePolicy', async (done) => {
-      let response;
-      try {
-        const putInstancePolicyParams = Object.assign({}, options);
-        putInstancePolicyParams.setInstancePoliciesOneOf = {
+    it('setDualAuthInstancePolicy', async () => {
+      const putInstancePolicyParams = {
+        ...getValidParams(),
+        instancePolicyPutBody: {
           metadata: {
             collectionType: 'application/vnd.ibm.kms.policy+json',
             collectionTotal: 1,
@@ -545,20 +458,16 @@ describe('key protect v2 integration', () => {
               },
             },
           ],
-        };
-        response = await keyProtectClient.putInstancePolicy(putInstancePolicyParams);
-      } catch (err) {
-        done(err);
-      }
+        },
+      };
+      const response = await keyProtectClient.putInstancePolicy(putInstancePolicyParams);
       expect(response.status).toEqual(204);
-      done();
     });
 
-    it('setAllowedNetworkInstancePolicy', async (done) => {
-      let response;
-      try {
-        const putInstancePolicyParams = Object.assign({}, options);
-        putInstancePolicyParams.setInstancePoliciesOneOf = {
+    it('setAllowedNetworkInstancePolicy', async () => {
+      const putInstancePolicyParams = {
+        ...getValidParams(),
+        instancePolicyPutBody: {
           metadata: {
             collectionType: 'application/vnd.ibm.kms.policy+json',
             collectionTotal: 1,
@@ -572,22 +481,14 @@ describe('key protect v2 integration', () => {
               },
             },
           ],
-        };
-        response = await keyProtectClient.putInstancePolicy(putInstancePolicyParams);
-      } catch (err) {
-        done(err);
-      }
+        },
+      };
+      const response = await keyProtectClient.putInstancePolicy(putInstancePolicyParams);
       expect(response.status).toEqual(204);
-      done();
     });
 
-    it('getInstancePolicy', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.getInstancePolicy(options);
-      } catch (err) {
-        done(err);
-      }
+    it('getInstancePolicy', async () => {
+      const response = await keyProtectClient.getInstancePolicy(getValidParams());
       expect(response.status).toEqual(200);
 
       const rsrcs = response.result.resources;
@@ -603,82 +504,59 @@ describe('key protect v2 integration', () => {
         expect(rsrcs[1].policy_type).toEqual('dualAuthDelete');
         expect(rsrcs[1].policy_data.enabled).toBeFalsy();
       }
-
-      done();
     });
   });
 
   describe('key alias', () => {
     const keyAlias = 'nodejsKeyAlias';
-    it('createKeyAlias', async (done) => {
-      let response;
-      try {
-        const createKeyAliasParams = Object.assign({}, options);
-        createKeyAliasParams.id = keyId;
-        createKeyAliasParams.alias = keyAlias;
-        response = await keyProtectClient.createKeyAlias(createKeyAliasParams);
-      } catch (err) {
-        done(err);
-      }
+    it('createKeyAlias', async () => {
+      const createKeyAliasParams = {
+        ...getValidParams(),
+        id: keyId,
+        alias: keyAlias,
+      };
+      const response = await keyProtectClient.createKeyAlias(createKeyAliasParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(201);
-      done();
     });
 
-    it('getKeyByAlias', async (done) => {
-      let response;
-      try {
-        const getKeyAliasParams = Object.assign({}, options);
-        getKeyAliasParams.id = keyAlias;
-        response = await keyProtectClient.getKey(getKeyAliasParams);
-      } catch (err) {
-        done(err);
-      }
+    it('getKeyByAlias', async () => {
+      const getKeyAliasParams = {
+        ...getValidParams(),
+        id: keyAlias,
+      };
+      const response = await keyProtectClient.getKey(getKeyAliasParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
-      done();
     });
 
-    it('deleteKeyAlias', async (done) => {
-      let response;
-      try {
-        const deleteKeyAliasParams = Object.assign({}, options);
-        deleteKeyAliasParams.id = keyId;
-        deleteKeyAliasParams.alias = keyAlias;
-        response = await keyProtectClient.deleteKeyAlias(deleteKeyAliasParams);
-      } catch (err) {
-        done(err);
-      }
+    it('deleteKeyAlias', async () => {
+      const deleteKeyAliasParams = {
+        ...getValidParams(),
+        id: keyId,
+        alias: keyAlias,
+      };
+      const response = await keyProtectClient.deleteKeyAlias(deleteKeyAliasParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(204);
-      done();
     });
   });
 
   describe('key ring', () => {
     // create unique key ring id
     const keyRingId = 'testNodeSdkKeyRingId' + Math.random().toString(36).substring(7);
-    it('createKeyRing', async (done) => {
-      let response;
-      try {
-        const createKeyRingParams = Object.assign({}, options);
-        createKeyRingParams.keyRingId = keyRingId;
-        response = await keyProtectClient.createKeyRing(createKeyRingParams);
-      } catch (err) {
-        done(err);
-      }
+    it('createKeyRing', async () => {
+      const createKeyRingParams = {
+        ...getValidParams(),
+        keyRingId: keyRingId,
+      };
+      const response = await keyProtectClient.createKeyRing(createKeyRingParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(201);
-      done();
     });
 
-    it('listKeyRings', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.listKeyRings(options);
-      } catch (err) {
-        done(err);
-      }
+    it('listKeyRings', async () => {
+      const response = await keyProtectClient.listKeyRings(getValidParams());
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
 
@@ -687,88 +565,63 @@ describe('key protect v2 integration', () => {
         keyRingIdArray.push(response.result.resources[i].id);
       }
       expect(keyRingIdArray).toContain(keyRingId);
-      done();
     });
 
-    it('transferKeyRing', async (done) => {
+    it('transferKeyRing', async () => {
       let response;
-      try {
-        const transferKeyringParams = Object.assign({}, options);
-        transferKeyringParams.id = keyId;
-        transferKeyringParams.xKmsKeyRing = 'default';
-        const body = { 'keyRingID': keyRingId };
-        transferKeyringParams.keyPatchBody = body;
-        response = await keyProtectClient.patchKey(transferKeyringParams);
-      } catch (err) {
-        done(err);
-      }
+      const transferKeyringParams = {
+        ...getValidParams(),
+        id: keyId,
+        xKmsKeyRing: 'default',
+        keyPatchBody: { 'keyRingID': keyRingId },
+      };
+      response = await keyProtectClient.patchKey(transferKeyringParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result.resources[0].keyRingID).toEqual(keyRingId);
 
       // transfer the key back to 'default' key ring so that the test key ring can be deleted
-      try {
-        const transferKeyringParams = Object.assign({}, options);
-        transferKeyringParams.id = keyId;
-        transferKeyringParams.xKmsKeyRing = keyRingId;
-        const body = { 'keyRingID': 'default' };
-        transferKeyringParams.keyPatchBody = body;
-        response = await keyProtectClient.patchKey(transferKeyringParams);
-      } catch (err) {
-        done(err);
-      }
+      const transferKeyringParams2 = {
+        ...getValidParams(),
+        id: keyId,
+        xKmsKeyRing: keyRingId,
+        keyPatchBody: { 'keyRingID': 'default' },
+      };
+      response = await keyProtectClient.patchKey(transferKeyringParams2);
       expect(response.status).toEqual(200);
       expect(response.result.resources[0].keyRingID).toEqual('default');
-      done();
     });
 
-    it('deleteKeyRing', async (done) => {
-      let response;
-      try {
-        const deleteKeyRingParams = Object.assign({}, options);
-        deleteKeyRingParams.keyRingId = keyRingId;
-        response = await keyProtectClient.deleteKeyRing(deleteKeyRingParams);
-      } catch (err) {
-        done(err);
-      }
-
+    it('deleteKeyRing', async () => {
+      const deleteKeyRingParams = {
+        ...getValidParams(),
+        keyRingId: keyRingId,
+      };
+      const response = await keyProtectClient.deleteKeyRing(deleteKeyRingParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(204);
-      done();
     });
   });
 
   describe('registration', () => {
-    it('getRegistrations', async (done) => {
-      let response;
-      const getRegistrationsParams = Object.assign({}, options);
-      getRegistrationsParams.id = keyId;
-      try {
-        response = await keyProtectClient.getRegistrations(getRegistrationsParams);
-      } catch (err) {
-        done(err);
-      }
-
+    it('getRegistrations', async () => {
+      const getRegistrationsParams = {
+        ...getValidParams(),
+        id: keyId,
+      };
+      const response = await keyProtectClient.getRegistrations(getRegistrationsParams);
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result).toBeDefined();
       expect(response.result.metadata.collectionTotal).toBeGreaterThanOrEqual(0);
-
-      done();
     });
 
-    it('getRegistrationsAllKeys', async (done) => {
-      let response;
-      try {
-        response = await keyProtectClient.getRegistrationsAllKeys(options);
-      } catch (err) {
-        done(err);
-      }
+    it('getRegistrationsAllKeys', async () => {
+      const response = await keyProtectClient.getRegistrationsAllKeys(getValidParams());
       expect(response).toBeDefined();
       expect(response.status).toEqual(200);
       expect(response.result).toBeDefined();
       expect(response.result.metadata.collectionTotal).toBeGreaterThanOrEqual(0);
-      done();
     });
   });
 });
