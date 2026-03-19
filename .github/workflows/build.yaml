@@ -77,7 +77,7 @@ jobs:
 
 
   publish-release:
-    if: "github.ref_name == 'main' && github.event_name != 'pull_request'"
+    if: "github.ref_name == 'master' && github.event_name != 'pull_request'"
     name: semantic-release
     needs: build
     runs-on: ubuntu-latest
