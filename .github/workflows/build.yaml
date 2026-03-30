@@ -81,8 +81,10 @@ jobs:
     name: semantic-release
     needs: build
     permissions:
-      contents: write # REPO PERMISSIONS
-      id-token: write # OIDC PERMISSIONS
+      contents: write # Repo permissions
+      id-token: write # Open ID Connect permissions
+      issues: write # Permission to write to issues if failed
+      pull-requests: write
     runs-on: ubuntu-latest
 
     steps:
@@ -98,8 +100,11 @@ jobs:
         run: |
           npm ci
           npm run build
+          
+      - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
+        run: npm audit signatures
 
       - name: Run semantic-release
         env:
-          GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Using auto-populated GITHUB_TOKEN with above permissions
         run: npm run semantic-release
