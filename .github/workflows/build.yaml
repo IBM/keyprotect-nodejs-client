@@ -94,17 +94,17 @@ jobs:
       - name: Setup Node
         uses: actions/setup-node@v6
         with:
-          node-version: 22
+          node-version: "lts/*"
 
       - name: Build
         run: |
           npm ci
           npm run build
-          
+
       - name: Verify the integrity of provenance attestations and registry signatures for installed dependencies
         run: npm audit signatures
 
       - name: Run semantic-release
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # Using auto-populated GITHUB_TOKEN with above permissions
-        run: npm run semantic-release
+        run: npx semantic-release
