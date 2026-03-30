@@ -81,7 +81,8 @@ jobs:
     name: semantic-release
     needs: build
     permissions:
-      id-token: write
+      contents: write # REPO PERMISSIONS
+      id-token: write # OIDC PERMISSIONS
     runs-on: ubuntu-latest
 
     steps:
