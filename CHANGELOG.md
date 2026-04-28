@@ -1,3 +1,10 @@
+## [0.4.3](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.2...v0.4.3) (2026-04-28)
+
+
+### Bug Fixes
+
+* **deps:** bump axios to 1.15.2 and follow-redirects to 1.16.0 to address CVEs ([#59](https://github.com/IBM/keyprotect-nodejs-client/issues/59)) ([2c348b6](https://github.com/IBM/keyprotect-nodejs-client/commit/2c348b64ab65b9fd0bca76627e79046f9602f696))
+
 ## [0.4.2](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.1...v0.4.2) (2026-03-30)
 
 
