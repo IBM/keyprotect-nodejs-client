@@ -1,3 +1,11 @@
+## [0.4.4](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.3...v0.4.4) (2026-04-28)
+
+
+### Bug Fixes
+
+* **build:** persist creds false ([#61](https://github.com/IBM/keyprotect-nodejs-client/issues/61)) ([ba569c2](https://github.com/IBM/keyprotect-nodejs-client/commit/ba569c22a677107310d04697a2c549ddeb8e11ec))
+* **build:** tweak github workflow ([#60](https://github.com/IBM/keyprotect-nodejs-client/issues/60)) ([b54aafc](https://github.com/IBM/keyprotect-nodejs-client/commit/b54aafce443931374f2d575aff0d9c8c16e69fc0))
+
 ## [0.4.3](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.2...v0.4.3) (2026-04-28)
 
 

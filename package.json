@@ -1,6 +1,6 @@
 {
   "name": "@ibm-cloud/ibm-key-protect",
-  "version": "0.4.3",
+  "version": "0.4.4",
   "description": "IBM Cloud Key Protect Node SDK",
   "repository": {
     "type": "git",
