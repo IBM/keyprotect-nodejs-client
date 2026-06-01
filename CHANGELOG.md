@@ -1,3 +1,10 @@
+## [0.4.5](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.4...v0.4.5) (2026-06-01)
+
+
+### Bug Fixes
+
+* **deps:** bump axios, lodash-es, and npm to address 8 CVEs ([#64](https://github.com/IBM/keyprotect-nodejs-client/issues/64)) ([d910225](https://github.com/IBM/keyprotect-nodejs-client/commit/d9102259ba5488f98d8cd1a74814ccec6632d54f))
+
 ## [0.4.4](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.3...v0.4.4) (2026-04-28)
 
 
