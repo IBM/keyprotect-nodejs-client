@@ -1,3 +1,10 @@
+## [0.4.6](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.5...v0.4.6) (2026-06-23)
+
+
+### Bug Fixes
+
+* **deps:** bump form-data, undici, js-yaml and npm ([#67](https://github.com/IBM/keyprotect-nodejs-client/issues/67)) ([35f17a8](https://github.com/IBM/keyprotect-nodejs-client/commit/35f17a88eb633847acf8a5e9ddc4aa24e8a4b17d))
+
 ## [0.4.5](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.4...v0.4.5) (2026-06-01)
 
 
