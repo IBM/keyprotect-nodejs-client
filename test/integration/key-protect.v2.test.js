@@ -93,6 +93,11 @@ describe('key protect v2 integration', () => {
 
   // Tear down - delete the test instance and key
   afterAll(async () => {
+    if (!instanceGuid) {
+      console.warn('Cleanup skipped: no instance was created');
+      return;
+    }
+
     const deleteKeyParams = {
       bluemixInstance: instanceGuid,
       id: keyId,
@@ -100,12 +105,30 @@ describe('key protect v2 integration', () => {
       correlationId: options.correlationId,
     };
     await keyProtectClient.deleteKey(deleteKeyParams);
-    
+
     const resourceControllerService = new ResourceControllerV2(resourceControllerClient);
-    await resourceControllerService.deleteResourceInstance({ id: instanceGuid });
-    
-    console.log('Cleanup completed successfully');
-  });
+    const backoffMs = [10000, 20000];
+    for (let attempt = 1; attempt <= 3; attempt++) {
+      try {
+        await resourceControllerService.deleteResourceInstance({ id: instanceGuid });
+        console.log('Cleanup completed successfully');
+        return;
+      } catch (err) {
+        if (err.status === 404 || err.status === 410) {
+          console.log('Cleanup completed: instance already removed');
+          return;
+        }
+        if (attempt === 3) {
+          console.warn(
+            `Cleanup: failed to delete instance ${instanceGuid} after 3 attempts (${err.status} ${err.message}). ` +
+              `Delete it manually: ibmcloud resource service-instance-delete ${instanceGuid} --force`
+          );
+          return;
+        }
+        await new Promise((r) => setTimeout(r, backoffMs[attempt - 1]));
+      }
+    }
+  }, 120000);
 
   describe('import token', () => {
     const maxRetrievals = 30;
