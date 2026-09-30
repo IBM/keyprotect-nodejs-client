@@ -1,3 +1,10 @@
+## [0.4.7](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.6...v0.4.7) (2026-09-30)
+
+
+### Bug Fixes
+
+* **deps:** bump ibm-cloud-sdk-core, axios, npm, undici and js-yaml to address CVEs, retry instance cleanup in integration test ([#69](https://github.com/IBM/keyprotect-nodejs-client/issues/69)) ([9eba2d0](https://github.com/IBM/keyprotect-nodejs-client/commit/9eba2d01b033739bffbb2c37ec2c5fc3935718a7))
+
 ## [0.4.6](https://github.com/IBM/keyprotect-nodejs-client/compare/v0.4.5...v0.4.6) (2026-06-23)
 
 
