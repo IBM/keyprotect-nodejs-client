@@ -6,6 +6,8 @@ import eslint from '@eslint/js';
 import tseslint from 'typescript-eslint';
 
 export default tseslint.config(
+  // Flat config does not read .eslintignore
+  { ignores: ['dist/'] },
   eslint.configs.recommended,
   ...tseslint.configs.recommended,
   {
@@ -13,6 +15,8 @@ export default tseslint.config(
     // It could be possible that autogeneration nolonger breaks these rules at some point.
     "rules": {
       '@typescript-eslint/no-var-requires': 'warn',
+      '@typescript-eslint/no-require-imports': 'warn',
+      '@typescript-eslint/no-empty-object-type': 'warn',
       '@typescript-eslint/no-explicit-any': 'warn',
       '@typescript-eslint/no-unused-vars': 'warn',
       '@typescript-eslint/no-namespace': 'warn',
