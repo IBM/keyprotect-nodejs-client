@@ -19,6 +19,9 @@
 
     /* Strict Type-Checking Options */
     "alwaysStrict": true,                   /* Parse in strict mode and emit "use strict" for each source file. */
+    "strict": false,                        /* TS 6 defaults this to true; keep the pre-TS6 behavior. */
+    "esModuleInterop": false,               /* TS 6 defaults this to true, which breaks `import * as extend from 'extend'`. */
+    "ignoreDeprecations": "6.0",            /* target=ES5 and moduleResolution=node are deprecated in TS 6 and removed in TS 7. */
 
     /* Module Resolution Options */
     "moduleResolution": "node",             /* Specify module resolution strategy: 'node' (Node.js) or 'classic' (TypeScript pre-1.6). */
